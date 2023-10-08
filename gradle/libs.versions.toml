@@ -1,0 +1,41 @@
+[versions]
+agp = "8.3.0-alpha01"
+android-database-sqlcipher = {require = "3.5.9"} # Must use this version as only this version is compatible with RRNote
+compiler = "3.1.4"
+gson = "2.10.1"
+jsoup = "1.14.3"
+kotlin = "1.9.0"
+core-ktx = "1.12.0"
+junit = "4.13.2"
+androidx-test-ext-junit = "1.1.5"
+espresso-core = "3.5.1"
+appcompat = "1.6.1"
+material = "1.11.0-alpha03"
+sqlcipher-android = "4.0.1"
+sqlite = "2.3.1"
+markwon-core = "4.6.2"
+markwon-image = "4.6.2"
+icarus = "0.1.14"
+preference-ktx = "1.2.1"
+biometric = "1.1.0"
+
+[libraries]
+android-database-sqlcipher-v359 = { module = "net.zetetic:android-database-sqlcipher", version.ref = "android-database-sqlcipher" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+# compiler = { module = "com.android.databinding:compiler", version.ref = "compiler" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon_core" }
+markwon-image = { group = "io.noties.markwon", name = "image", version.ref = "markwon_image" }
+androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preference-ktx" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

@@ -1,0 +1,74 @@
+plugins {
+    alias libs.plugins.androidApplication
+    alias libs.plugins.kotlinAndroid
+    id "org.jetbrains.kotlin.kapt"
+}
+
+android {
+    namespace 'com.eggtartc.briannote'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.eggtartc.briannote"
+        minSdk 30
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        dataBinding = true
+    }
+}
+
+dependencies {
+    // SQLite & SQLCipher
+    implementation libs.android.database.sqlcipher.v359
+
+    // implementation libs.sqlcipher.android
+    implementation libs.androidx.sqlite
+
+    // Biometrics
+    implementation libs.androidx.biometric
+
+    // Material 3
+    implementation libs.material
+
+    // jsoup
+    implementation libs.jsoup
+
+    // Icarus
+    implementation project(":icarus")
+
+    // License dialog
+    implementation project(":licensesdialog")
+
+    // Gson
+    implementation libs.gson
+
+    // Markdown support
+    implementation libs.markwon.core
+    implementation libs.markwon.image
+
+    implementation libs.core.ktx
+    implementation libs.appcompat
+    implementation libs.androidx.preference.ktx
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.ext.junit
+    androidTestImplementation libs.espresso.core
+}

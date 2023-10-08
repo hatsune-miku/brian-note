@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+>
+    <PreferenceCategory android:title="安全">
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="preference_switch_password_lock"
+            android:title="密码锁"
+            android:icon="@drawable/lock"
+        />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="preference_switch_allow_biometric_authentications"
+            android:title="允许面部识别或指纹解锁"
+        />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="preference_switch_disable_screenshot"
+            android:summary="开启后，软件内将无法截图。"
+            android:title="禁止截图"
+            android:icon="@drawable/front_hand"
+        />
+        <!-- Derived from https://github.com/androidx/androidx/blob/8cb282cc/preference/preference/res/layout/preference_widget_switch_compat.xml -->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="数据备份">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="preference_backup"
+            android:title="自动备份已启用"
+            android:summary="@string/preference_summary_backup"
+            android:icon="@drawable/backup_table"
+            android:enabled="false"
+        />
+        <Preference
+            android:key="preference_backup_more"
+            android:title="了解自动备份"
+            />
+        <Preference
+            android:key="preference_backup_manual"
+            android:title="手动备份至本地（开发中）"
+            android:summary="备份数据到本地文件，便于手动恢复，脱离系统的自动备份体系。"
+        />
+        <Preference
+            android:key="preference_restore"
+            android:title="从本地文件恢复（开发中）"
+        />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/app_name">
+        <Preference
+            android:key="preference_licenses"
+            android:title="@string/preference_licences"
+        />
+        <Preference
+            android:key="preference_version"
+            android:title="版本"
+            android:summary="@string/app_version"
+        />
+    </PreferenceCategory>
+</PreferenceScreen>

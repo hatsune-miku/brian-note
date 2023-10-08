@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <!--
+        <item name="fontFamily">@font/olivera</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:textSize">28sp</item>
+        -->
+        <item name="fontFamily">@font/dubiel_plain</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
+    </style>
+</resources>

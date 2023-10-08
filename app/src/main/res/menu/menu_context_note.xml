@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/contextMenuItemPinUnpin"
+        android:title="置顶"
+        android:icon="@drawable/push_pin"
+    />
+    <item
+        android:id="@+id/contextMenuItemChangeTitle"
+        android:title="更改标题"
+        android:icon="@drawable/edit_note"
+    />
+    <item
+        android:id="@+id/contextMenuItemDelete"
+        android:title="删除"
+        android:icon="@drawable/delete"
+    />
+</menu>

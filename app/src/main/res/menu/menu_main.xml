@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menuItemImportFromRRNote"
+        android:title="从 RRNote 导入"
+        android:icon="@drawable/move_up"
+    />
+    <item
+        android:id="@+id/menuItemSettings"
+        android:title="设置"
+        android:icon="@drawable/settings"
+    />
+</menu>

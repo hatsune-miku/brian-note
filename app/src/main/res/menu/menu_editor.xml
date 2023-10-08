@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+>
+    <item
+        android:id="@+id/menuItemSave"
+        android:title="保存"
+        android:icon="@drawable/save"
+    />
+    <item
+        android:id="@+id/menuItemSaveAndExit"
+        android:title="保存退出"
+        android:icon="@drawable/save"
+    />
+    <item
+        android:id="@+id/menuItemExit"
+        android:title="不保存退出"
+        android:icon="@drawable/logout"
+    />
+    <item
+        android:id="@+id/menuItemDelete"
+        android:title="删除"
+        android:icon="@drawable/delete"
+    />
+</menu>
