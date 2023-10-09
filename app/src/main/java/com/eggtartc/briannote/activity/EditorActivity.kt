@@ -1,6 +1,7 @@
 package com.eggtartc.briannote.activity
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -67,6 +68,13 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
             setDestructiveTitlePredicate { it == "删除" }
             reInflateMenu()
         }
+
+        binding.horizontalScrollView.setBackgroundColor(
+            SurfaceColors.SURFACE_2.getColor(this@EditorActivity))
+        window.navigationBarColor =
+            SurfaceColors.SURFACE_2.getColor(this@EditorActivity)
+        binding.root.setBackgroundColor(
+            SurfaceColors.SURFACE_2.getColor(this@EditorActivity))
 
         activityResultLauncherImagePicking = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -195,7 +203,15 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
         }
 
         // Custom CSS.
-        icarus.loadCSS("file:///android_asset/editor.css")
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_NO -> {
+                icarus.loadCSS("file:///android_asset/editor.css")
+            }
+            Configuration.UI_MODE_NIGHT_YES -> {
+                icarus.loadCSS("file:///android_asset/editor_dark.css")
+            }
+        }
 
         // Render.
         icarus.render()

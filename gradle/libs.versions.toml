@@ -11,19 +11,19 @@ androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 appcompat = "1.6.1"
 material = "1.11.0-alpha03"
-sqlcipher-android = "4.0.1"
 sqlite = "2.3.1"
 markwon-core = "4.6.2"
 markwon-image = "4.6.2"
-icarus = "0.1.14"
 preference-ktx = "1.2.1"
 biometric = "1.1.0"
+webkit = "1.8.0"
 
 [libraries]
 android-database-sqlcipher-v359 = { module = "net.zetetic:android-database-sqlcipher", version.ref = "android-database-sqlcipher" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 # compiler = { module = "com.android.databinding:compiler", version.ref = "compiler" }
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
@@ -32,8 +32,8 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon_core" }
-markwon-image = { group = "io.noties.markwon", name = "image", version.ref = "markwon_image" }
+markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon-core" }
+markwon-image = { group = "io.noties.markwon", name = "image", version.ref = "markwon-image" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preference-ktx" }
 
 [plugins]

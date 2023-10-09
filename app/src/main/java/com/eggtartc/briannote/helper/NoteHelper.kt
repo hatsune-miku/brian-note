@@ -233,8 +233,8 @@ class NoteHelper(private val context: Context) {
                 sql.append("is_pinned = ?, ")
                 arguments.add(if (pinned!!) 1 else 0)
             }
-            sql.setLength(sql.length - 2)
-            sql.append(" WHERE id = ?")
+            sql.append("updated_at = ? WHERE id = ?")
+            arguments.add(Instant.now().epochSecond.toInt())
             arguments.add(id)
 
             return UpdateQuery(sql.toString(), arguments.toTypedArray())

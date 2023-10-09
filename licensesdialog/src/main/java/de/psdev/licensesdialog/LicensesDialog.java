@@ -29,10 +29,14 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
 
@@ -80,31 +84,24 @@ public class LicensesDialog {
 
     public Dialog create() {
         //Get resources
+        final LinearLayout containingLayout = createContainingLayout(mContext);
         final WebView webView = createWebView(mContext, mEnableDarkMode);
         webView.loadDataWithBaseURL(null, mLicensesText, "text/html", "utf-8", null);
-        final AlertDialog.Builder builder;
+        containingLayout.addView(webView);
+
+        final MaterialAlertDialogBuilder builder;
         if (mThemeResourceId != 0) {
-            builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, mThemeResourceId));
+            builder = new MaterialAlertDialogBuilder(new ContextThemeWrapper(mContext, mThemeResourceId));
         } else {
-            builder = new AlertDialog.Builder(mContext);
+            builder = new MaterialAlertDialogBuilder(mContext);
         }
         builder.setTitle(mTitleText)
-            .setView(webView)
+            .setView(containingLayout)
             .setPositiveButton(mCloseText, (dialogInterface, i) -> dialogInterface.dismiss());
         final AlertDialog dialog = builder.create();
         dialog.setOnDismissListener(dialog1 -> {
             if (mOnDismissListener != null) {
                 mOnDismissListener.onDismiss(dialog1);
-            }
-        });
-        dialog.setOnShowListener(dialogInterface -> {
-            if (mDividerColor != 0) {
-                // Set title divider color
-                final int titleDividerId = mContext.getResources().getIdentifier("titleDivider", "id", "android");
-                final View titleDivider = dialog.findViewById(titleDividerId);
-                if (titleDivider != null) {
-                    titleDivider.setBackgroundColor(mDividerColor);
-                }
             }
         });
         return dialog;
@@ -119,6 +116,18 @@ public class LicensesDialog {
     // ==========================================================================================================================
     // Private API
     // ==========================================================================================================================
+
+    private static LinearLayout createContainingLayout(final Context context) {
+        final LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT);
+
+        linearLayout.setLayoutParams(layoutParams);
+        return linearLayout;
+    }
 
     private static WebView createWebView(final Context context, final boolean mEnableDarkMode) {
         final WebView webView = new WebView(context);

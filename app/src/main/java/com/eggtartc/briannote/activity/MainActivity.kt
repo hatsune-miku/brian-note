@@ -102,6 +102,7 @@ class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Too
         }
         noteItems.removeAt(index)
         noteItemAdapter.notifyItemRemoved(index)
+        checkEmptyNotes()
     }
 
     private fun notifyNoteTitleChanged(note: Note) {
@@ -111,6 +112,7 @@ class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Too
         }
         noteItems[index] = note
         noteItemAdapter.notifyItemChanged(index)
+        checkEmptyNotes()
     }
 
     /**
@@ -118,6 +120,12 @@ class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Too
      */
     private fun getNoteIndex(note: Note): Int {
         return noteItems.indexOfFirst { it is Note && it.id == note.id }
+    }
+
+    private fun checkEmptyNotes() {
+        if (noteItems.none { !it.isHeader() }) {
+            reloadNotes()
+        }
     }
 
     private fun reloadNotes() {
@@ -155,9 +163,9 @@ class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Too
 
         // No notes?
         binding.viewNoNote.visibility = if (noteItems.isEmpty()) {
-            android.view.View.VISIBLE
+            View.VISIBLE
         } else {
-            android.view.View.GONE
+            View.GONE
         }
     }
 
