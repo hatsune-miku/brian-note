@@ -35,7 +35,7 @@ open class BaseActivity: AppCompatActivity() {
         tryApplyFlagSecure()
     }
 
-    private fun tryApplyFlagSecure() {
+    fun tryApplyFlagSecure() {
         when (preferencesHelper.read(Keys.FLAG_SECURE, false)) {
             true -> activityHelper.setFlagSecure()
             false -> activityHelper.clearFlagSecure()

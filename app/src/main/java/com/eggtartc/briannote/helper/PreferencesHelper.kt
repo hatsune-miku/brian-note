@@ -42,4 +42,9 @@ class PreferencesHelper(context: Context) {
     fun write(key: String, value: String?) {
         sharedPreferences.edit().putString(key, value).commit()
     }
+
+    @SuppressLint("ApplySharedPref")
+    fun write(key: String, value: Boolean) {
+        sharedPreferences.edit().putBoolean(key, value).commit()
+    }
 }

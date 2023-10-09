@@ -76,7 +76,8 @@ class SettingsFragment(private val activity: SettingsActivity): PreferenceFragme
     }
 
     private fun onDisableScreenshotPreferenceChanged(disableScreenshot: Boolean): Boolean {
-        activity.preferencesHelper.writeAsync(Keys.FLAG_SECURE, disableScreenshot)
+        activity.preferencesHelper.write(Keys.FLAG_SECURE, disableScreenshot)
+        activity.tryApplyFlagSecure()
         return true
     }
 
