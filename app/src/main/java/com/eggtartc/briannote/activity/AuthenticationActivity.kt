@@ -27,6 +27,8 @@ class AuthenticationActivity : BaseActivity() {
     private lateinit var binding: ActivityAuthenticationBinding
     private lateinit var correctPasswordSha256: String
     private lateinit var passwordAlgorithm: PasswordAlgorithm
+    private lateinit var shouldDisableBiometricAuthentication: Boolean
+
     private var password = ""
     private var authenticated = false
     private var settingUpPassword = false
@@ -61,6 +63,9 @@ class AuthenticationActivity : BaseActivity() {
             } ?: run {
                 setMessage("请输入密码")
             }
+
+            shouldDisableBiometricAuthentication =
+                authenticationHelper.getShouldDisableBiometricAuthentication(intent)
         }
 
         binding.apply {
@@ -185,15 +190,23 @@ class AuthenticationActivity : BaseActivity() {
      * @return true if biometrics can be used and should be used
      */
     private fun canAndShouldUseBiometrics(): Boolean {
+        // Disabled from settings?
         if (!preferencesHelper.read(Keys.BIOMETRIC_AUTHENTICATION, true)) {
             return false
         }
+
+        // Disabled from intent?
+        if (!shouldDisableBiometricAuthentication) {
+            return false
+        }
+
         val biometricManager = BiometricManager.from(this)
         return when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> true
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> false
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> false
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                // Jump to biometrics enrollment, if applicable
                 enrollBiometrics()
                 false
             }
