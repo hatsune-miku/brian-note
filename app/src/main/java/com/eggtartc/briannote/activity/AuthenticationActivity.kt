@@ -19,7 +19,8 @@ import com.google.android.material.elevation.SurfaceColors
 
 class AuthenticationActivity : BaseActivity() {
     companion object {
-        public val PASSWORD_MAX_LENGTH = 8
+        public val PASSWORD_LENGTH_MINIMUM = 4
+        public val PASSWORD_LENGTH_MAXIMUM = 8
     }
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
@@ -27,8 +28,8 @@ class AuthenticationActivity : BaseActivity() {
     private lateinit var binding: ActivityAuthenticationBinding
     private lateinit var correctPasswordSha256: String
     private lateinit var passwordAlgorithm: PasswordAlgorithm
-    private lateinit var shouldDisableBiometricAuthentication: Boolean
 
+    private var shouldDisableBiometricAuthentication: Boolean = false
     private var password = ""
     private var authenticated = false
     private var settingUpPassword = false
@@ -266,11 +267,19 @@ class AuthenticationActivity : BaseActivity() {
     }
 
     private fun onEnterClicked() {
+        if (!isPasswordLengthValid()) {
+            setMessage("密码长度必须在 $PASSWORD_LENGTH_MINIMUM 到 $PASSWORD_LENGTH_MAXIMUM （含）之间")
+            return
+        }
         if (settingUpPassword) {
             stateSettingUpPassword()
         } else {
             stateAuthenticating()
         }
+    }
+
+    private fun isPasswordLengthValid(): Boolean {
+        return password.length in PASSWORD_LENGTH_MINIMUM..PASSWORD_LENGTH_MAXIMUM
     }
 
     private fun setMessage(message: String) {
