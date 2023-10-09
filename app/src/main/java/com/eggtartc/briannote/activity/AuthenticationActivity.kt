@@ -269,6 +269,7 @@ class AuthenticationActivity : BaseActivity() {
     private fun onEnterClicked() {
         if (!isPasswordLengthValid()) {
             setMessage("密码长度必须在 $PASSWORD_LENGTH_MINIMUM 到 $PASSWORD_LENGTH_MAXIMUM （含）之间")
+            clearInputPassword()
             return
         }
         if (settingUpPassword) {
