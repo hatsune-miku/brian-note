@@ -42,12 +42,12 @@
             />
         <Preference
             android:key="preference_backup_manual"
-            android:title="手动备份至本地（开发中）"
+            android:title="手动备份至本地"
             android:summary="备份数据到本地文件，便于手动恢复，脱离系统的自动备份体系。"
         />
         <Preference
             android:key="preference_restore"
-            android:title="从本地文件恢复（开发中）"
+            android:title="从本地文件恢复"
         />
     </PreferenceCategory>
 

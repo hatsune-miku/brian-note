@@ -1,27 +1,25 @@
 package com.eggtartc.briannote.helper
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.eggtartc.briannote.constants.Keys
+import com.eggtartc.briannote.interfaces.IDatabaseHelper
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteOpenHelper
 
-class DatabaseHelper(
-    private val context: Context
-) : SQLiteOpenHelper(
-    /* context */                   context,
-    /* name */                      Keys.DATABASE_NAME,
-    /* factory */                   null,
-    /* version */                   1,
-    /* minimumSupportedVersion */   //1,
-    /* databaseHook */              //null,
-    /* errorHandler */              //DatabaseErrorHandler {  }
-) {
+class DatabaseHelper(context: Context) : SQLiteOpenHelper(
+    /* context */  context,
+    /* name */     Keys.DATABASE_NAME,
+    /* factory */  null,
+    /* version */  1,
+), IDatabaseHelper {
     companion object {
         const val TAG = "DatabaseHelper";
 
         /**
-         * The call to System.loadLibrary("sqlcipher") must occur before any other database operation.
+         * The call to System.loadLibrary("sqlcipher") must
+         * occur before any other database operation.
          */
         init {
             System.loadLibrary("sqlcipher")
@@ -69,8 +67,8 @@ class DatabaseHelper(
     }
 
     @Throws(Exception::class)
-    fun initializeForFirstRun() {
-        getWritableDatabase(Keys.DATABASE_PASSWORD).apply {
+    override fun initializeForFirstRun() {
+        getWritableDatabase().apply {
             beginTransaction()
             try {
                 execSQL("DELETE FROM secure")
@@ -86,5 +84,13 @@ class DatabaseHelper(
 
     private fun upgrade() {
         // Left blank intentionally
+    }
+
+    override fun getReadableDatabase(): SQLiteDatabase {
+        return getReadableDatabase(Keys.DATABASE_PASSWORD)
+    }
+
+    override fun getWritableDatabase(): SQLiteDatabase {
+        return getWritableDatabase(Keys.DATABASE_PASSWORD)
     }
 }

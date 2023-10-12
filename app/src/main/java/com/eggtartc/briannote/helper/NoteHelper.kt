@@ -4,11 +4,20 @@ import android.content.ContentValues
 import android.content.Context
 import com.eggtartc.briannote.constants.Keys
 import com.eggtartc.briannote.enums.Role
+import com.eggtartc.briannote.interfaces.IDatabaseHelper
 import com.eggtartc.briannote.model.Note
 import java.time.Instant
 
-class NoteHelper(private val context: Context) {
-    private val databaseHelper = DatabaseHelper(context)
+class NoteHelper {
+    private val databaseHelper: IDatabaseHelper
+
+    constructor(context: Context) {
+        this.databaseHelper = DatabaseHelper(context)
+    }
+
+    constructor(databaseHelper: IDatabaseHelper) {
+        this.databaseHelper = databaseHelper
+    }
 
     fun initializeForFirstRun() {
         databaseHelper.initializeForFirstRun()
@@ -38,7 +47,7 @@ class NoteHelper(private val context: Context) {
     }
 
     fun readSecurePassword(fake: Boolean): String {
-        databaseHelper.getReadableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getReadableDatabase().apply {
             val cursor = rawQuery(
                 "SELECT password FROM secure WHERE is_fake = ?",
                 arrayOf(if (fake) 1 else 0)).apply {
@@ -52,7 +61,7 @@ class NoteHelper(private val context: Context) {
 
     @Throws
     fun writeSecurePassword(passwordSha256: String, fake: Boolean) {
-        databaseHelper.getWritableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getWritableDatabase().apply {
             beginTransaction()
             try {
                 execSQL("UPDATE secure SET password = ? WHERE is_fake = ?",
@@ -67,7 +76,7 @@ class NoteHelper(private val context: Context) {
 
     @Throws
     fun readNotes(): List<Note> {
-        databaseHelper.getReadableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getReadableDatabase().apply {
             val notes = mutableListOf<Note>()
             rawQuery(
                 "SELECT id, title, substr(html_content, 0, 100), is_pinned, created_at, updated_at FROM notes" +
@@ -81,7 +90,7 @@ class NoteHelper(private val context: Context) {
     }
 
     fun readNote(id: Long, shouldLoadFullContent: Boolean): Note {
-        databaseHelper.getReadableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getReadableDatabase().apply {
             val queryPartHtmlContent = if (shouldLoadFullContent) {
                 "html_content"
             }
@@ -100,7 +109,7 @@ class NoteHelper(private val context: Context) {
     }
 
     fun readNoteFullContent(id: Long): String? {
-        databaseHelper.getReadableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getReadableDatabase().apply {
             val cursor = rawQuery(
                 "SELECT html_content FROM notes WHERE id = ?",
                 arrayOf(id)).apply {
@@ -114,7 +123,7 @@ class NoteHelper(private val context: Context) {
 
     @Throws
     fun updateNote(updateQuery: UpdateQuery) {
-        databaseHelper.getWritableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getWritableDatabase().apply {
             beginTransaction()
             try {
                 execSQL(updateQuery.sql, updateQuery.arguments)
@@ -131,7 +140,7 @@ class NoteHelper(private val context: Context) {
      */
     @Throws
     fun createNote(): Long {
-        databaseHelper.getWritableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getWritableDatabase().apply {
             beginTransaction()
             try {
                 val now = Instant.now()
@@ -151,8 +160,20 @@ class NoteHelper(private val context: Context) {
         }
     }
 
+    @Throws
+    fun addNote(note: Note) {
+        val noteId = createNote()
+        updateNote(
+            UpdateBuilder(noteId)
+                .title(note.title)
+                .htmlContent(note.htmlContent)
+                .pinned(note.pinned)
+                .build()
+        )
+    }
+
     fun importNotes(notes: List<Note>): List<Long> {
-        databaseHelper.getWritableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getWritableDatabase().apply {
             val ids = mutableListOf<Long>()
             beginTransaction()
             try {
@@ -176,7 +197,7 @@ class NoteHelper(private val context: Context) {
 
     @Throws
     fun deleteNote(id: Long) {
-        databaseHelper.getWritableDatabase(Keys.DATABASE_PASSWORD).apply {
+        databaseHelper.getWritableDatabase().apply {
             beginTransaction()
             try {
                 execSQL("DELETE FROM notes WHERE id = ?", arrayOf(id))

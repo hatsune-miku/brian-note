@@ -3,6 +3,7 @@ package com.eggtartc.briannote.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -15,13 +16,14 @@ import com.eggtartc.briannote.constants.Keys
 import de.psdev.licensesdialog.LicensesDialog
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20
 import de.psdev.licensesdialog.licenses.BSD2ClauseLicense
-import de.psdev.licensesdialog.licenses.EclipsePublicLicense10
 import de.psdev.licensesdialog.licenses.License
 import de.psdev.licensesdialog.licenses.MITLicense
 import de.psdev.licensesdialog.model.Notice
 import de.psdev.licensesdialog.model.Notices
+import java.io.File
 
-class SettingsFragment(private val activity: SettingsActivity): PreferenceFragmentCompat() {
+
+class SettingsFragment(private val activity: SettingsActivity) : PreferenceFragmentCompat() {
     @PreferenceBind("preference_switch_password_lock")
     private lateinit var preferenceSwitchPasswordLock: SwitchPreferenceCompat
 
@@ -42,6 +44,12 @@ class SettingsFragment(private val activity: SettingsActivity): PreferenceFragme
 
     @PreferenceBind("preference_version")
     private lateinit var preferenceVersion: Preference
+
+    @PreferenceBind("preference_backup_manual")
+    private lateinit var preferenceManuallyBackup: Preference
+
+    @PreferenceBind("preference_restore")
+    private lateinit var preferenceRestore: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_screen, rootKey)
@@ -73,6 +81,48 @@ class SettingsFragment(private val activity: SettingsActivity): PreferenceFragme
         preferenceBackupMore.setOnPreferenceClickListener {
             onLearnMoreAboutBackupPreferenceClicked()
         }
+
+        preferenceManuallyBackup.setOnPreferenceClickListener {
+            onManuallyBackup()
+        }
+
+        preferenceRestore.setOnPreferenceClickListener {
+            onRestore()
+        }
+    }
+
+    private fun onRestore(): Boolean {
+        activity.startRecovery()
+        return true
+    }
+
+    private fun onManuallyBackup(): Boolean {
+        val databaseFile = File(activity.databaseHelper.getReadableDatabase().path)
+        val databaseFileInFilesDir = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS
+            ), databaseFile.name
+        )
+
+        val backupProcess = {
+            databaseFile.copyTo(databaseFileInFilesDir, true)
+            activity.activityHelper.showAlertDialog(
+                "已将数据库备份到 Documents 目录下的 ${databaseFile.name} 文件中", "备份完成"
+            )
+        }
+
+        if (databaseFileInFilesDir.exists()) {
+            activity.activityHelper.showAlertDialog(
+                "Documents 目录下已存在备份文件 (${databaseFile.name})，确定覆盖吗？", "备份已存在",
+                "覆盖", {
+                    backupProcess()
+                }, "取消"
+            )
+        } else {
+            backupProcess()
+        }
+
+        return true
     }
 
     private fun onLearnMoreAboutBackupPreferenceClicked(): Boolean {
@@ -87,14 +137,18 @@ class SettingsFragment(private val activity: SettingsActivity): PreferenceFragme
     }
 
     private fun onAllowBiometricAuthenticationsPreferenceChanged(allowBiometricAuthentications: Boolean): Boolean {
-        activity.preferencesHelper.writeAsync(Keys.BIOMETRIC_AUTHENTICATION, allowBiometricAuthentications)
+        activity.preferencesHelper.writeAsync(
+            Keys.BIOMETRIC_AUTHENTICATION,
+            allowBiometricAuthentications
+        )
         return true
     }
 
     private fun onPasswordLockPreferenceChanged(enabledPassword: Boolean): Boolean {
         if (enabledPassword) {
             activity.authenticationHelper.setupPassword(
-                activity.applicationResultLauncher)
+                activity.applicationResultLauncher
+            )
         } else {
             activity.authenticationHelper.tryAuthenticate(
                 "关闭密码前需要验证密码",
@@ -119,6 +173,7 @@ class SettingsFragment(private val activity: SettingsActivity): PreferenceFragme
                 activity.preferencesHelper.writeAsync(Keys.PASSWORD_LOCK, success)
                 preferenceSwitchPasswordLock.isChecked = success
             }
+
             Keys.AO_PASSWORD_VERIFY -> {
                 activity.preferencesHelper.writeAsync(Keys.PASSWORD_LOCK, !success)
                 preferenceSwitchPasswordLock.isChecked = !success
