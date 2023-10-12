@@ -1,5 +1,6 @@
 package com.eggtartc.briannote.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
@@ -13,6 +14,10 @@ import com.eggtartc.briannote.annotation.processor.PreferenceBinder
 import com.eggtartc.briannote.constants.Keys
 import de.psdev.licensesdialog.LicensesDialog
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20
+import de.psdev.licensesdialog.licenses.BSD2ClauseLicense
+import de.psdev.licensesdialog.licenses.EclipsePublicLicense10
+import de.psdev.licensesdialog.licenses.License
+import de.psdev.licensesdialog.licenses.MITLicense
 import de.psdev.licensesdialog.model.Notice
 import de.psdev.licensesdialog.model.Notices
 
@@ -123,13 +128,108 @@ class SettingsFragment(private val activity: SettingsActivity): PreferenceFragme
 
     private fun showLicenses() {
         val notices = Notices().apply {
-            addNotice(Notice("Test1", "https://www.google.com", "Test1", ApacheSoftwareLicense20()))
-            addNotice(Notice("Test1", "https://www.google.com", "Test1", ApacheSoftwareLicense20()))
-            addNotice(Notice("Test1", "https://www.google.com", "Test1", ApacheSoftwareLicense20()))
+            addNotice(
+                Notice(
+                    "icarus-android",
+                    "https://github.com/mr5/icarus-android",
+                    "Copyright (c) <2016> <github.com/mr5>",
+                    MITLicense()
+                )
+            )
+            addNotice(
+                Notice(
+                    "SQLCipher Community Edition",
+                    "https://github.com/sqlcipher/sqlcipher",
+                    "Copyright (c) 2020, ZETETIC LLC All rights reserved.",
+                    object : License() {
+                        override fun getName(): String {
+                            return BSD2ClauseLicense().name
+                        }
+
+                        override fun readSummaryTextFromResources(context: Context): String {
+                            return getContent(context, R.raw.license_full_sqlcipher)
+                        }
+
+                        override fun readFullTextFromResources(context: Context): String {
+                            return getContent(context, R.raw.license_full_sqlcipher)
+                        }
+
+                        override fun getVersion(): String {
+                            return "1.0"
+                        }
+
+                        override fun getUrl(): String {
+                            return "https://github.com/sqlcipher/sqlcipher/blob/master/LICENSE"
+                        }
+
+                    }
+                )
+            )
+            addNotice(
+                Notice(
+                    "Markwon",
+                    "https://github.com/noties/Markwon",
+                    "Copyright 2019 Dimitry Ivanov (legal@noties.io)",
+                    ApacheSoftwareLicense20()
+                )
+            )
+            addNotice(
+                Notice(
+                    "material-components-android",
+                    "https://github.com/material-components/material-components-android",
+                    "material-components-android",
+                    ApacheSoftwareLicense20()
+                )
+            )
+            addNotice(
+                Notice(
+                    "junit5",
+                    "https://github.com/junit-team/junit5",
+                    "junit5",
+                    object : License() {
+                        override fun getName(): String {
+                            return "Eclipse Public License 2.0"
+                        }
+
+                        override fun readSummaryTextFromResources(context: Context?): String {
+                            return getContent(context, R.raw.license_full_epl2)
+                        }
+
+                        override fun readFullTextFromResources(context: Context?): String {
+                            return getContent(context, R.raw.license_full_epl2)
+                        }
+
+                        override fun getVersion(): String {
+                            return "2.0"
+                        }
+
+                        override fun getUrl(): String {
+                            return "https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt"
+                        }
+                    }
+                )
+            )
+            addNotice(
+                Notice(
+                    "jsoup",
+                    "https://github.com/jhy/jsoup/",
+                    "jsoup",
+                    MITLicense()
+                )
+            )
+            addNotice(
+                Notice(
+                    "gson",
+                    "https://github.com/google/gson",
+                    "Copyright 2008 Google Inc.",
+                    ApacheSoftwareLicense20()
+                )
+            )
         }
         LicensesDialog.Builder(activity)
             .setNotices(notices)
             .setIncludeOwnLicense(true)
+            .setEnableDarkMode(activity.activityHelper.isDarkModeEnabled())
             .build()
             .show()
     }

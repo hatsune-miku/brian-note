@@ -203,15 +203,14 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
         }
 
         // Custom CSS.
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        when (currentNightMode) {
-            Configuration.UI_MODE_NIGHT_NO -> {
-                icarus.loadCSS("file:///android_asset/editor.css")
+        icarus.loadCSS(
+            if (activityHelper.isDarkModeEnabled()) {
+                "file:///android_asset/editor_dark.css"
             }
-            Configuration.UI_MODE_NIGHT_YES -> {
-                icarus.loadCSS("file:///android_asset/editor_dark.css")
+            else {
+                "file:///android_asset/editor.css"
             }
-        }
+        )
 
         // Render.
         icarus.render()

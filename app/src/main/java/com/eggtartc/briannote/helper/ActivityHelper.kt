@@ -1,6 +1,7 @@
 package com.eggtartc.briannote.helper
 
 import android.app.Activity
+import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
@@ -81,6 +82,15 @@ class ActivityHelper(private val activity: Activity) {
             val imeInsets = insets.getInsets(WindowInsets.Type.ime())
             v.setPadding(0, 0, 0, imeInsets.bottom)
             insets
+        }
+    }
+
+    fun isDarkModeEnabled(): Boolean {
+        val currentNightMode = activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_YES -> true
+            else -> false
         }
     }
 }
