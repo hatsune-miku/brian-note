@@ -7,6 +7,7 @@ import android.os.Environment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.eggtartc.briannote.BuildVariants
 import com.eggtartc.briannote.R
 import com.eggtartc.briannote.activity.BackupRestoreActivity
 import com.eggtartc.briannote.activity.SettingsActivity
@@ -78,8 +79,13 @@ class SettingsFragment(private val activity: SettingsActivity) : PreferenceFragm
             onDisableScreenshotPreferenceChanged(disabling as Boolean)
         }
 
-        preferenceBackupMore.setOnPreferenceClickListener {
-            onLearnMoreAboutBackupPreferenceClicked()
+        if (!BuildVariants.CLOUD_BACKUP) {
+            preferenceBackup.isVisible = false
+            preferenceBackupMore.isVisible = false
+        } else {
+            preferenceBackupMore.setOnPreferenceClickListener {
+                onLearnMoreAboutBackupPreferenceClicked()
+            }
         }
 
         preferenceManuallyBackup.setOnPreferenceClickListener {

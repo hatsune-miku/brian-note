@@ -24,13 +24,36 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions += "default"
+    productFlavors {
+        withCloudBackup {
+            dimension "default"
+            versionNameSuffix "-cb"
+            // applicationIdSuffix ".cb"
+        }
+        withoutCloudBackup {
+            dimension "default"
+            versionNameSuffix "-ncb"
+            // applicationIdSuffix ".ncb"
+        }
+    }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            outputFileName = "${variant.name}-${variant.versionName}.apk"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = '17'
     }
+
     buildFeatures {
         dataBinding = true
     }

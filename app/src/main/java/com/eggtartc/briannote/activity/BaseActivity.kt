@@ -1,11 +1,8 @@
 package com.eggtartc.briannote.activity
 
 import android.os.Bundle
-import android.view.View
-import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.databinding.ViewDataBinding
 import com.eggtartc.briannote.constants.Keys
 import com.eggtartc.briannote.helper.ActivityHelper
 import com.eggtartc.briannote.helper.AuthenticationHelper
