@@ -97,7 +97,7 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
 
     private fun onBackPressedCompat() {
         Log.d(TAG, "onBackPressedCompat: called")
-        save()
+        saveAndFinish()
     }
 
     override fun onImagePickStart() {
