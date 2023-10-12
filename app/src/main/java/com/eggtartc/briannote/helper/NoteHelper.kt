@@ -55,6 +55,7 @@ class NoteHelper {
             }
             val securePassword = cursor.getString(0)
             cursor.close()
+            close()
             return securePassword
         }
     }
@@ -70,6 +71,7 @@ class NoteHelper {
             }
             finally {
                 endTransaction()
+                close()
             }
         }
     }
@@ -85,6 +87,7 @@ class NoteHelper {
                     notes.add(Note.fromCursor(cursor))
                 }
             }
+            close()
             return notes
         }
     }
@@ -104,6 +107,7 @@ class NoteHelper {
             }
             val note = Note.fromCursor(cursor)
             cursor.close()
+            close()
             return note
         }
     }
@@ -117,6 +121,7 @@ class NoteHelper {
             }
             val fullContent = cursor.getString(0)
             cursor.close()
+            close()
             return fullContent
         }
     }
@@ -131,6 +136,7 @@ class NoteHelper {
             }
             finally {
                 endTransaction()
+                close()
             }
         }
     }
@@ -156,6 +162,7 @@ class NoteHelper {
             }
             finally {
                 endTransaction()
+                close()
             }
         }
     }
@@ -191,6 +198,7 @@ class NoteHelper {
             }
             finally {
                 endTransaction()
+                close()
             }
         }
     }
@@ -205,6 +213,7 @@ class NoteHelper {
             }
             finally {
                 endTransaction()
+                close()
             }
         }
     }

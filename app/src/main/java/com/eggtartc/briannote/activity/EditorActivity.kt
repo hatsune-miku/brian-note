@@ -1,24 +1,23 @@
 package com.eggtartc.briannote.activity
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.view.ViewGroup
-import android.widget.TextView
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.updateLayoutParams
+import androidx.core.os.BuildCompat
 import com.eggtartc.briannote.R
 import com.eggtartc.briannote.databinding.ActivityEditorBinding
 import com.eggtartc.briannote.extension.ImageButton
 import com.eggtartc.briannote.extension.format
 import com.eggtartc.briannote.extension.getRawHtmlContent
-import com.eggtartc.briannote.extension.renderHooked
 import com.eggtartc.briannote.helper.NoteHelper
 import com.eggtartc.briannote.model.Note
 import com.eggtartc.briannote.util.EditorUtils
@@ -31,10 +30,7 @@ import com.github.mr5.icarus.button.FontScaleButton
 import com.github.mr5.icarus.button.TextViewButton
 import com.github.mr5.icarus.entity.Options
 import com.github.mr5.icarus.popover.FontScalePopoverImpl
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import java.util.Date
 
 
@@ -88,6 +84,20 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
 
         prepareIcarus()
         activityHelper.makeViewRaiseAlongWithKeyboard(binding.root)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+                onBackPressedCompat()
+            }
+        } else {
+            onBackPressedDispatcher.addCallback { onBackPressedCompat() }
+        }
+    }
+
+    private fun onBackPressedCompat() {
+        Log.d(TAG, "onBackPressedCompat: called")
+        save()
     }
 
     override fun onImagePickStart() {
