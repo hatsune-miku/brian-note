@@ -216,8 +216,7 @@ class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Too
             "三小时前" to { it.hoursAway in 3..4 },
             "两小时前" to { it.hoursAway in 2..3 },
             "一小时前" to { it.hoursAway in 1..2 },
-            "半小时前" to { it.hoursAway in 0..1 },
-            "刚刚" to { it.hoursAway == 0 },
+            "刚刚" to { it.hoursAway in 0..1 },
         )
         val ret = mutableListOf<INoteItem>()
 
