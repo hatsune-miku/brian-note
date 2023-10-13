@@ -56,6 +56,10 @@ class SettingsFragment(private val activity: SettingsActivity) : PreferenceFragm
         setPreferencesFromResource(R.xml.settings_screen, rootKey)
         PreferenceBinder.bind(this)
 
+        preferenceVersion.summary = activity.packageManager
+            .getPackageInfo(activity.packageName, 0)
+            .versionName
+
         preferenceLicenses.setOnPreferenceClickListener {
             showLicenses()
             true

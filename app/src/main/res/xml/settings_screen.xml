@@ -59,7 +59,6 @@
         <Preference
             android:key="preference_version"
             android:title="版本"
-            android:summary="@string/app_version"
         />
     </PreferenceCategory>
 </PreferenceScreen>

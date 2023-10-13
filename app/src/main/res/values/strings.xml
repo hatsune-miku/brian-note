@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">BrianNote</string>
-    <string name="app_version">1.0</string>
     <string name="import_from_rrnote_title">数据迁移</string>
     <string name="backup_learn_more">了解自动备份</string>
     <string name="title_preview">Title</string>
