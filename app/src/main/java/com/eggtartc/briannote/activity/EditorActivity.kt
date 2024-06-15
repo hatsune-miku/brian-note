@@ -7,12 +7,12 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
-import androidx.core.os.BuildCompat
 import com.eggtartc.briannote.R
 import com.eggtartc.briannote.databinding.ActivityEditorBinding
 import com.eggtartc.briannote.extension.ImageButton
@@ -32,11 +32,13 @@ import com.github.mr5.icarus.entity.Options
 import com.github.mr5.icarus.popover.FontScalePopoverImpl
 import com.google.android.material.elevation.SurfaceColors
 import java.util.Date
+import java.util.logging.Logger
 
 
 class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuItemClickListener {
     companion object {
         private const val TAG = "EditorActivity"
+        private const val MESSAGE_NOTE_READY = 1
     }
 
     private lateinit var binding: ActivityEditorBinding
@@ -46,6 +48,17 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
     private lateinit var note: Note
     private lateinit var activityResultLauncherImagePicking: ActivityResultLauncher<Intent>
 
+    private fun setLoadingState(loading: Boolean) {
+        if (loading) {
+            binding.webViewEditor.visibility = View.INVISIBLE
+            binding.progressBar.visibility = View.VISIBLE
+        }
+        else {
+            binding.webViewEditor.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.INVISIBLE
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,12 +66,13 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
         setContentView(binding.root)
 
         val noteId = getNoteId(intent)
-        note = noteHelper.readNote(noteId, true)
+
+        setLoadingState(true)
+        loadNoteAndNotifyAsync(noteId)
 
         binding.topAppBar.apply {
             setOnClickListener { onChangeTitle() }
             setNavigationOnClickListener { saveAndFinish() }
-            setTitle(note.title)
             setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this@EditorActivity))
             setOnMenuItemClickListener(this@EditorActivity)
             setDestructiveTitlePredicate { it == "删除" }
@@ -82,7 +96,6 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
             }
         }
 
-        prepareIcarus()
         activityHelper.makeViewRaiseAlongWithKeyboard(binding.root)
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -93,6 +106,20 @@ class EditorActivity : BaseActivity(), ImageButton.IImagePicker, Toolbar.OnMenuI
         } else {
             onBackPressedDispatcher.addCallback { onBackPressedCompat() }
         }
+    }
+
+    private fun loadNoteAndNotifyAsync(noteId: Long) {
+        Thread {
+            note = noteHelper.readNote(noteId, true)
+            runOnUiThread {
+                binding.topAppBar.title = note.title
+                prepareIcarus()
+            }
+            Thread.sleep(500)
+            runOnUiThread {
+                setLoadingState(false)
+            }
+        }.start()
     }
 
     private fun onBackPressedCompat() {

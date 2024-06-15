@@ -12,8 +12,6 @@ android {
         minSdkVersion 14
         targetSdkVersion 34
 
-        versionName project.version
-        versionCode 1
     }
 
     compileOptions {

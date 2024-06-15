@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.0-alpha01"
+agp = "8.3.2"
 android-database-sqlcipher = {require = "3.5.9"} # Must use this version as only this version is compatible with RRNote
 compiler = "3.1.4"
 gson = "2.10.1"

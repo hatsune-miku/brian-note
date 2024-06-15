@@ -28,13 +28,28 @@
             />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <WebView
-            android:id="@+id/webViewEditor"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="99"
-            android:layout_gravity="center"
-        />
+        >
+
+            <WebView
+                android:id="@+id/webViewEditor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+            >
+
+            </WebView>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
