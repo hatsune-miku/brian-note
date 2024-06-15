@@ -2,6 +2,7 @@ package com.eggtartc.briannote.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -10,11 +11,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.eggtartc.briannote.BrianNoteApplication
 import com.eggtartc.briannote.R
 import com.eggtartc.briannote.adapter.NoteItemAdapter
 import com.eggtartc.briannote.constants.Keys
 import com.eggtartc.briannote.databinding.ActivityMainBinding
-import com.eggtartc.briannote.enums.PasswordAlgorithm
 import com.eggtartc.briannote.extension.getDayOfMonth
 import com.eggtartc.briannote.extension.getHourOfDay
 import com.eggtartc.briannote.extension.getMonth2
@@ -30,20 +31,30 @@ import com.eggtartc.briannote.util.HashUtils
 import com.google.android.material.elevation.SurfaceColors
 import java.util.Date
 import java.util.Stack
+import java.util.function.Consumer
+import kotlin.system.exitProcess
 
 
 class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Toolbar.OnMenuItemClickListener {
     companion object {
         private const val TAG = "MainActivity"
+        private const val STATE_KEY_REQUIRE_AUTH = "shouldRequireAuthenticationOnNextStart"
     }
 
+    private var shouldRequireAuthenticationOnNextStart = true
     private lateinit var binding: ActivityMainBinding
     private lateinit var noteItemAdapter: NoteItemAdapter<MainActivity>
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var applicationInstance: BrianNoteApplication
     private val noteItems = mutableListOf<INoteItem>()
+    private var applicationStateChangeSubscriptionId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            shouldRequireAuthenticationOnNextStart = it.getBoolean(STATE_KEY_REQUIRE_AUTH, true)
+        }
+        applicationInstance = application as BrianNoteApplication
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -76,15 +87,61 @@ class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Too
         }
 
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode != RESULT_OK) {
+                Log.d(TAG, "onCreate: Authentication failed.")
+                exitProcess(0)
+            }
+            Log.d(TAG, "onCreate: Authenticate succeeded.")
+            shouldRequireAuthenticationOnNextStart = false
+        }
 
+        applicationStateChangeSubscriptionId = applicationInstance.subscribeToApplicationStateChange {
+            when (it) {
+                BrianNoteApplication.STATE_BACKGROUND -> onBackground()
+                BrianNoteApplication.STATE_FOREGROUND -> onForeground()
+            }
         }
 
         reloadNotes()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(STATE_KEY_REQUIRE_AUTH, shouldRequireAuthenticationOnNextStart)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        applicationStateChangeSubscriptionId?.let {
+            if (!applicationInstance.unsubscribeFromApplicationStateChange(it)) {
+                Log.e(TAG, "onDestroy: Failed to unsubscribe from application state change.")
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         reloadNotes()
+    }
+
+    private fun onBackground() {
+        Log.d(TAG, "onBackground")
+        shouldRequireAuthenticationOnNextStart = true
+    }
+
+    private fun onForeground() {
+        Log.d(TAG, "onForeground")
+        if (!shouldRequireAuthenticationOnNextStart) {
+            return
+        }
+
+        val allowBiometrics = preferencesHelper.read(Keys.BIOMETRIC_AUTHENTICATION, true)
+        authenticationHelper.tryAuthenticate(
+            "请输入密码",
+            !allowBiometrics,
+            {},
+            activityResultLauncher
+        )
     }
 
     private fun tryInitializeForFirstRun() {
@@ -252,7 +309,6 @@ class MainActivity: BaseActivity(), NoteItemAdapter.OnNoteItemClickListener, Too
     }
 
     override fun onNoteItemClicked(note: Note, view: View) {
-        noteHelper.writeSecurePassword(HashUtils.sha256("1145"), false)
         startEditingNode(note.id)
     }
 
