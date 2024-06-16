@@ -19,8 +19,8 @@ import com.google.android.material.elevation.SurfaceColors
 
 class AuthenticationActivity : BaseActivity() {
     companion object {
-        public val PASSWORD_LENGTH_MINIMUM = 4
-        public val PASSWORD_LENGTH_MAXIMUM = 8
+        public const val PASSWORD_LENGTH_MINIMUM = 4
+        public const val PASSWORD_LENGTH_MAXIMUM = 8
     }
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
@@ -197,7 +197,7 @@ class AuthenticationActivity : BaseActivity() {
         }
 
         // Disabled from intent?
-        if (!shouldDisableBiometricAuthentication) {
+        if (shouldDisableBiometricAuthentication) {
             return false
         }
 
@@ -257,7 +257,11 @@ class AuthenticationActivity : BaseActivity() {
     }
 
     private fun stateAuthenticating() {
-        if (HashUtils.sha256(password) == correctPasswordSha256) {
+        val hashed = when (passwordAlgorithm) {
+            PasswordAlgorithm.MD5 -> HashUtils.md5(password)
+            PasswordAlgorithm.SHA256 -> HashUtils.sha256(password)
+        }
+        if (hashed == correctPasswordSha256) {
             authenticatedAndFinish()
             return
         }
